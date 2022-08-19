@@ -25,4 +25,11 @@ export interface iUser {
     nat: string;
 }
 
+export interface iGetUsersRequest {
+    data: {
+        results: iUser[];
+    };
+    status: number;
+}
+
 export default iUser;

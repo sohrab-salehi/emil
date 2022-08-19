@@ -1,9 +1,9 @@
-import { iUser } from "../types/user";
+import { iGetUsersRequest } from "../types/user";
 import randomUserServer from "./servers";
 
-export const getUsers: () => Promise<iUser> = () => {
+export const getUsers: () => Promise<iGetUsersRequest> = () => {
     const result = randomUserServer
-        .get(`?results=400`)
+        .get(`?results=200`)
         .then((response) => {
             return response;
         })
