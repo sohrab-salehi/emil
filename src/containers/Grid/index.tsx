@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { URLSearchParamsInit, useSearchParams } from "react-router-dom";
-import { Table, Space, Button } from "antd";
+import { Table, Space, Button, Tag } from "antd";
 import type { TableProps } from "antd";
 import type { SorterResult } from "antd/es/table/interface";
 
@@ -27,7 +27,11 @@ function Grid(props: { users: iUser[] }): JSX.Element {
             setPageNumber(Number(tempPageNumber));
         }
         if (tempSortedColumn) {
-            setSortedColumn(tempSortedColumn);
+            if (tempSortedColumn === "undefined") {
+                setSortedColumn("");
+            } else {
+                setSortedColumn(tempSortedColumn);
+            }
         }
         setTitleFilters(tempTitleFilters);
     }, [urlParams]);
@@ -148,8 +152,16 @@ function Grid(props: { users: iUser[] }): JSX.Element {
 
     return (
         <>
-            <Space style={{ marginBottom: 16 }}>
-                <Button onClick={resetOrder}>Reset Order</Button>
+            <Space size={[0, 16]} style={{ marginBottom: 16 }}>
+                <Button onClick={resetOrder} style={{ marginRight: 20 }}>
+                    Reset Order
+                </Button>
+                {sortedColumn !== "" ? (
+                    <Tag color="green">Sorted by {sortedColumn}</Tag>
+                ) : null}
+                {titleFilters?.map((title: string) => (
+                    <Tag color="blue">{title}</Tag>
+                ))}
             </Space>
             <Table
                 dataSource={users}
