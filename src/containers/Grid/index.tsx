@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { URLSearchParamsInit, useSearchParams } from "react-router-dom";
-import { Table } from "antd";
+import { Table, Space, Button } from "antd";
 import type { TableProps } from "antd";
 import type { SorterResult } from "antd/es/table/interface";
 
@@ -46,6 +46,19 @@ function Grid(props: { users: iUser[] }): JSX.Element {
             page: pageString,
             size: sizeString,
             sort: sortString,
+        };
+        if (titleFiltersString) {
+            params = { ...params, titleFilters: titleFiltersString };
+        }
+        setUrlParams(params as URLSearchParamsInit);
+    };
+
+    const resetOrder: () => void = () => {
+        const titleFiltersString = titleFilters?.join(",");
+        let params: iParams = {
+            page: String(pageNumber),
+            size: String(pageSize),
+            sort: undefined,
         };
         if (titleFiltersString) {
             params = { ...params, titleFilters: titleFiltersString };
@@ -134,16 +147,21 @@ function Grid(props: { users: iUser[] }): JSX.Element {
     ];
 
     return (
-        <Table
-            dataSource={users}
-            columns={columns}
-            rowKey={(record) => record.email}
-            onChange={handleSortChange}
-            pagination={{
-                pageSize,
-                current: pageNumber,
-            }}
-        />
+        <>
+            <Space style={{ marginBottom: 16 }}>
+                <Button onClick={resetOrder}>Reset Order</Button>
+            </Space>
+            <Table
+                dataSource={users}
+                columns={columns}
+                rowKey={(record) => record.email}
+                onChange={handleSortChange}
+                pagination={{
+                    pageSize,
+                    current: pageNumber,
+                }}
+            />
+        </>
     );
 }
 
