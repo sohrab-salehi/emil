@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { URLSearchParamsInit, useSearchParams } from "react-router-dom";
 import { Table } from "antd";
 import type { TableProps } from "antd";
 import type { SorterResult } from "antd/es/table/interface";
 
 import iUser from "../../types/user";
+import { iParams } from "../../types/urlParams";
 
 function Grid(props: { users: iUser[] }): JSX.Element {
     const { users } = props;
@@ -12,11 +13,13 @@ function Grid(props: { users: iUser[] }): JSX.Element {
     const [pageSize, setPageSize] = useState(20);
     const [pageNumber, setPageNumber] = useState(1);
     const [sortedColumn, setSortedColumn] = useState("");
+    const [titleFilters, setTitleFilters] = useState<string[] | undefined>([]);
 
     useEffect(() => {
         const tempPageSize = Number(urlParams.get("size"));
         const tempPageNumber = Number(urlParams.get("page"));
         const tempSortedColumn = urlParams.get("sort");
+        const tempTitleFilters = urlParams.get("titleFilters")?.split(",");
         if (tempPageSize) {
             setPageSize(tempPageSize);
         }
@@ -26,6 +29,7 @@ function Grid(props: { users: iUser[] }): JSX.Element {
         if (tempSortedColumn) {
             setSortedColumn(tempSortedColumn);
         }
+        setTitleFilters(tempTitleFilters);
     }, [urlParams]);
 
     const handleSortChange: TableProps<iUser>["onChange"] = (
@@ -37,11 +41,16 @@ function Grid(props: { users: iUser[] }): JSX.Element {
         const sizeString = String(pagination.pageSize);
         const tempSorter = sorter as SorterResult<iUser>;
         const sortString = String(tempSorter.columnKey);
-        setUrlParams({
+        const titleFiltersString = filters.name?.join(",");
+        let params: iParams = {
             page: pageString,
             size: sizeString,
             sort: sortString,
-        });
+        };
+        if (titleFiltersString) {
+            params = { ...params, titleFilters: titleFiltersString };
+        }
+        setUrlParams(params as URLSearchParamsInit);
     };
 
     const columns = [
@@ -59,6 +68,29 @@ function Grid(props: { users: iUser[] }): JSX.Element {
             },
             sortOrder:
                 sortedColumn === "name" ? ("ascend" as const) : undefined,
+            filters: [
+                {
+                    text: "Miss",
+                    value: "Miss",
+                },
+                {
+                    text: "Mr",
+                    value: "Mr",
+                },
+                {
+                    text: "Mrs",
+                    value: "Mrs",
+                },
+                {
+                    text: "Ms",
+                    value: "Ms",
+                },
+            ],
+            onFilter: (value: string | number | boolean, user: iUser) => {
+                const { title } = user.name;
+                return title === value;
+            },
+            filteredValue: titleFilters,
         },
         {
             title: "Username",

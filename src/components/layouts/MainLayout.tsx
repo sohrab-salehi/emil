@@ -7,6 +7,16 @@ import logo from "../../assets/images/emil-logo.svg";
 const { Header, Content, Footer } = Layout;
 
 function MainLayout(): JSX.Element {
+    const menuItems = [
+        {
+            key: "home",
+            label: "Home",
+        },
+        {
+            key: "grid",
+            label: "Grid",
+        },
+    ];
     return (
         <Layout id="main-layout">
             <Header>
@@ -22,10 +32,8 @@ function MainLayout(): JSX.Element {
                     theme="dark"
                     mode="horizontal"
                     defaultSelectedKeys={["1"]}
-                >
-                    <Menu.Item key="home">Home</Menu.Item>
-                    <Menu.Item key="users">Users</Menu.Item>
-                </Menu>
+                    items={menuItems}
+                />
             </Header>
             <Content style={{ padding: "0 50px" }}>
                 <Breadcrumb style={{ margin: "16px 0" }}>
