@@ -44,7 +44,7 @@ function Grid(props: { users: iUser[] }): JSX.Element {
         const pageString = String(pagination.current);
         const sizeString = String(pagination.pageSize);
         const tempSorter = sorter as SorterResult<iUser>;
-        const sortString = String(tempSorter.columnKey);
+        const sortString = String(tempSorter.column?.key);
         const titleFiltersString = filters.name?.join(",");
         let params: iParams = {
             page: pageString,
