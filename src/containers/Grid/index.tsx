@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { URLSearchParamsInit, useSearchParams } from "react-router-dom";
 import { Table, Space, Button, Tag } from "antd";
 import type { TableProps } from "antd";
@@ -10,49 +10,40 @@ import { iParams } from "../../types/urlParams";
 function Grid(props: { users: iUser[] }): JSX.Element {
     const { users } = props;
     const [urlParams, setUrlParams] = useSearchParams();
-    const [pageSize, setPageSize] = useState(20);
-    const [pageNumber, setPageNumber] = useState(1);
-    const [sortedColumn, setSortedColumn] = useState("");
-    const [titleFilters, setTitleFilters] = useState<string[] | undefined>([]);
+    let pageSize = Number(urlParams.get("size"));
+    let pageNumber = Number(urlParams.get("page"));
+    let sortedColumn = urlParams.get("sort");
+    let titleFilters = urlParams.get("titleFilters")?.split(",");
 
-    useEffect(() => {
-        const tempPageSize = Number(urlParams.get("size"));
-        const tempPageNumber = Number(urlParams.get("page"));
-        const tempSortedColumn = urlParams.get("sort");
-        const tempTitleFilters = urlParams.get("titleFilters")?.split(",");
-        if (tempPageSize) {
-            setPageSize(tempPageSize);
-        }
-        if (tempPageNumber) {
-            setPageNumber(Number(tempPageNumber));
-        }
-        if (tempSortedColumn) {
-            if (tempSortedColumn === "undefined") {
-                setSortedColumn("");
-            } else {
-                setSortedColumn(tempSortedColumn);
-            }
-        }
-        setTitleFilters(tempTitleFilters);
-    }, [urlParams]);
-
-    const handleSortChange: TableProps<iUser>["onChange"] = (
+    const handleTableChange: TableProps<iUser>["onChange"] = (
         pagination,
         filters,
         sorter
     ) => {
+        if (pagination.pageSize) {
+            pageSize = pagination.pageSize;
+        }
+        if (pagination.current) {
+            pageNumber = pagination.current;
+        }
+        const tempSorter = sorter as SorterResult<iUser>;
+        const sortString = String(
+            tempSorter.column ? tempSorter.column.key : null
+        );
+        sortedColumn = sortString;
+        titleFilters = filters.name?.map((item) => String(item));
         const pageString = String(pagination.current);
         const sizeString = String(pagination.pageSize);
-        const tempSorter = sorter as SorterResult<iUser>;
-        const sortString = String(tempSorter.column?.key);
         const titleFiltersString = filters.name?.join(",");
         let params: iParams = {
             page: pageString,
             size: sizeString,
-            sort: sortString,
         };
         if (titleFiltersString) {
             params = { ...params, titleFilters: titleFiltersString };
+        }
+        if (sortString !== "null") {
+            params = { ...params, sort: sortString };
         }
         setUrlParams(params as URLSearchParamsInit);
     };
@@ -62,11 +53,11 @@ function Grid(props: { users: iUser[] }): JSX.Element {
         let params: iParams = {
             page: String(pageNumber),
             size: String(pageSize),
-            sort: undefined,
         };
         if (titleFiltersString) {
             params = { ...params, titleFilters: titleFiltersString };
         }
+        sortedColumn = null;
         setUrlParams(params as URLSearchParamsInit);
     };
 
@@ -156,18 +147,21 @@ function Grid(props: { users: iUser[] }): JSX.Element {
                 <Button onClick={resetOrder} style={{ marginRight: 20 }}>
                     Reset Order
                 </Button>
-                {sortedColumn !== "" ? (
+                {sortedColumn !== null ? (
                     <Tag color="green">Sorted by {sortedColumn}</Tag>
                 ) : null}
                 {titleFilters?.map((title: string) => (
-                    <Tag color="blue">{title}</Tag>
+                    <Tag key={title} color="blue">
+                        {title}
+                    </Tag>
                 ))}
             </Space>
             <Table
                 dataSource={users}
                 columns={columns}
+                loading={users.length === 0}
                 rowKey={(record) => record.email}
-                onChange={handleSortChange}
+                onChange={handleTableChange}
                 pagination={{
                     pageSize,
                     current: pageNumber,
