@@ -13,7 +13,9 @@ function Grid(props: { users: iUser[] }): JSX.Element {
     const [pageSize, setPageSize] = useState(20);
     const [pageNumber, setPageNumber] = useState(1);
     const [sortedColumn, setSortedColumn] = useState("");
-    const [titleFilters, setTitleFilters] = useState<string[] | undefined>([]);
+    const [titleFilters, setTitleFilters] = useState<
+        string[] | undefined | null
+    >([]);
 
     useEffect(() => {
         const tempPageSize = Number(urlParams.get("size"));
@@ -27,24 +29,31 @@ function Grid(props: { users: iUser[] }): JSX.Element {
             setPageNumber(Number(tempPageNumber));
         }
         if (tempSortedColumn) {
-            if (tempSortedColumn === "undefined") {
-                setSortedColumn("");
-            } else {
-                setSortedColumn(tempSortedColumn);
-            }
+            setSortedColumn(tempSortedColumn);
         }
         setTitleFilters(tempTitleFilters);
-    }, [urlParams]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-    const handleSortChange: TableProps<iUser>["onChange"] = (
+    const handleTableChange: TableProps<iUser>["onChange"] = (
         pagination,
         filters,
         sorter
     ) => {
-        const pageString = String(pagination.current);
-        const sizeString = String(pagination.pageSize);
+        if (pagination.pageSize) {
+            setPageSize(pagination.pageSize);
+        }
+        if (pagination.current) {
+            setPageNumber(pagination.current);
+        }
         const tempSorter = sorter as SorterResult<iUser>;
         const sortString = String(tempSorter.column?.key);
+        if (sortString) {
+            setSortedColumn(sortString);
+        }
+        setTitleFilters(filters.name?.map((item) => String(item)));
+        const pageString = String(pagination.current);
+        const sizeString = String(pagination.pageSize);
         const titleFiltersString = filters.name?.join(",");
         let params: iParams = {
             page: pageString,
@@ -62,11 +71,12 @@ function Grid(props: { users: iUser[] }): JSX.Element {
         let params: iParams = {
             page: String(pageNumber),
             size: String(pageSize),
-            sort: undefined,
+            sort: "",
         };
         if (titleFiltersString) {
             params = { ...params, titleFilters: titleFiltersString };
         }
+        setSortedColumn("");
         setUrlParams(params as URLSearchParamsInit);
     };
 
@@ -170,7 +180,7 @@ function Grid(props: { users: iUser[] }): JSX.Element {
                 columns={columns}
                 loading={users.length === 0}
                 rowKey={(record) => record.email}
-                onChange={handleSortChange}
+                onChange={handleTableChange}
                 pagination={{
                     pageSize,
                     current: pageNumber,

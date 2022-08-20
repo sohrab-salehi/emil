@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
+import { message } from "antd";
 
 import getUsers from "./api/user";
 import MainLayout from "./components/layouts/MainLayout";
@@ -11,7 +12,10 @@ function App(): JSX.Element {
     const [users, setUsers] = useState<iUser[]>([]);
 
     useEffect(() => {
-        getUsers().then((response) => setUsers(response.data.results));
+        getUsers().then(
+            (response) => setUsers(response.data.results),
+            (error) => message.error(error.message)
+        );
     }, []);
 
     return (
