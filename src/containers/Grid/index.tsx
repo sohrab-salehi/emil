@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { URLSearchParamsInit, useSearchParams } from "react-router-dom";
 import { Table, Space, Button, Tag } from "antd";
 import type { TableProps } from "antd";
@@ -10,30 +10,10 @@ import { iParams } from "../../types/urlParams";
 function Grid(props: { users: iUser[] }): JSX.Element {
     const { users } = props;
     const [urlParams, setUrlParams] = useSearchParams();
-    const [pageSize, setPageSize] = useState(20);
-    const [pageNumber, setPageNumber] = useState(1);
-    const [sortedColumn, setSortedColumn] = useState("");
-    const [titleFilters, setTitleFilters] = useState<
-        string[] | undefined | null
-    >([]);
-
-    useEffect(() => {
-        const tempPageSize = Number(urlParams.get("size"));
-        const tempPageNumber = Number(urlParams.get("page"));
-        const tempSortedColumn = urlParams.get("sort");
-        const tempTitleFilters = urlParams.get("titleFilters")?.split(",");
-        if (tempPageSize) {
-            setPageSize(tempPageSize);
-        }
-        if (tempPageNumber) {
-            setPageNumber(Number(tempPageNumber));
-        }
-        if (tempSortedColumn) {
-            setSortedColumn(tempSortedColumn);
-        }
-        setTitleFilters(tempTitleFilters);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    let pageSize = Number(urlParams.get("size"));
+    let pageNumber = Number(urlParams.get("page"));
+    let sortedColumn = urlParams.get("sort");
+    let titleFilters = urlParams.get("titleFilters")?.split(",");
 
     const handleTableChange: TableProps<iUser>["onChange"] = (
         pagination,
@@ -41,17 +21,17 @@ function Grid(props: { users: iUser[] }): JSX.Element {
         sorter
     ) => {
         if (pagination.pageSize) {
-            setPageSize(pagination.pageSize);
+            pageSize = pagination.pageSize;
         }
         if (pagination.current) {
-            setPageNumber(pagination.current);
+            pageNumber = pagination.current;
         }
         const tempSorter = sorter as SorterResult<iUser>;
-        const sortString = String(tempSorter.column?.key);
-        if (sortString) {
-            setSortedColumn(sortString);
-        }
-        setTitleFilters(filters.name?.map((item) => String(item)));
+        const sortString = String(
+            tempSorter.column ? tempSorter.column.key : ""
+        );
+        sortedColumn = sortString;
+        titleFilters = filters.name?.map((item) => String(item));
         const pageString = String(pagination.current);
         const sizeString = String(pagination.pageSize);
         const titleFiltersString = filters.name?.join(",");
@@ -76,7 +56,7 @@ function Grid(props: { users: iUser[] }): JSX.Element {
         if (titleFiltersString) {
             params = { ...params, titleFilters: titleFiltersString };
         }
-        setSortedColumn("");
+        sortedColumn = "";
         setUrlParams(params as URLSearchParamsInit);
     };
 
