@@ -28,7 +28,7 @@ function Grid(props: { users: iUser[] }): JSX.Element {
         }
         const tempSorter = sorter as SorterResult<iUser>;
         const sortString = String(
-            tempSorter.column ? tempSorter.column.key : ""
+            tempSorter.column ? tempSorter.column.key : null
         );
         sortedColumn = sortString;
         titleFilters = filters.name?.map((item) => String(item));
@@ -38,10 +38,12 @@ function Grid(props: { users: iUser[] }): JSX.Element {
         let params: iParams = {
             page: pageString,
             size: sizeString,
-            sort: sortString,
         };
         if (titleFiltersString) {
             params = { ...params, titleFilters: titleFiltersString };
+        }
+        if (sortString !== "null") {
+            params = { ...params, sort: sortString };
         }
         setUrlParams(params as URLSearchParamsInit);
     };
@@ -51,12 +53,11 @@ function Grid(props: { users: iUser[] }): JSX.Element {
         let params: iParams = {
             page: String(pageNumber),
             size: String(pageSize),
-            sort: "",
         };
         if (titleFiltersString) {
             params = { ...params, titleFilters: titleFiltersString };
         }
-        sortedColumn = "";
+        sortedColumn = null;
         setUrlParams(params as URLSearchParamsInit);
     };
 
@@ -140,13 +141,15 @@ function Grid(props: { users: iUser[] }): JSX.Element {
         },
     ];
 
+    console.log(sortedColumn);
+
     return (
         <>
             <Space size={[0, 16]} style={{ marginBottom: 16 }}>
                 <Button onClick={resetOrder} style={{ marginRight: 20 }}>
                     Reset Order
                 </Button>
-                {sortedColumn !== "" ? (
+                {sortedColumn !== null ? (
                     <Tag color="green">Sorted by {sortedColumn}</Tag>
                 ) : null}
                 {titleFilters?.map((title: string) => (
