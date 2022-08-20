@@ -1,26 +1,55 @@
-# Getting Started with Create React App
+## 💫 Summary
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+In this project, a simple table component is implemented with the ability to sort, filter, and change page size and number. Also, all the table parameters are bound to the page URL so the client can load the required information directly by entering the right URL.
+
+### Linter & code formatter
+`Eslint` and `Prettier` was used with **Airbnb** config.
+
+### Important libraries
+* [Ant design](https://ant.design/)
+* [React router v6](https://reactrouter.com/)
+* [Axios](https://axios-http.com/)
+* [React testing library](https://testing-library.com/docs/react-testing-library/intro/)
+* [Web vitals](https://web.dev/)
+
+This project was developed in response to [Emil Group](https://www.emil.de/)'s code challenge for the front-end role.
+
+**This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).**
+
+## 🏃‍♂️ How to run the project?
+
+At first, please route to the project directory and use the commands below to install all the dependencies.
+```
+npm install
+```
+or use `yarn`
+```
+yarn
+```
+For running the project in development environment use the commands below:
+```
+npm start
+```
+or use `yarn`
+```
+yarn start
+```
 
 ## Available Scripts
 
-In the project directory, you can run:
+In the project directory, you can run different commands for different purposes.
 
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `npm test`
-
+### 🛠 Run the tests
+```
+npm run test
+```
 Launches the test runner in the interactive watch mode.\
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
-
+### 🏗️ Build the project
+```
+npm run build
+```
 Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
@@ -29,7 +58,10 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
+### 🎛️ Eject webpack configs
+```
+npm run eject
+```
 
 **Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
@@ -38,6 +70,9 @@ If you aren’t satisfied with the build tool and configuration choices, you can
 Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+
+## Logging web vitals
+You can observe web vitals parameters like cumulative layout shift(CLS) or first input delay(FID) by passing `console.log` function to `reportWebVitals()` in `index.tsx`.
 
 ## Learn More
 

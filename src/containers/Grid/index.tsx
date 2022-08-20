@@ -141,8 +141,6 @@ function Grid(props: { users: iUser[] }): JSX.Element {
         },
     ];
 
-    console.log(sortedColumn);
-
     return (
         <>
             <Space size={[0, 16]} style={{ marginBottom: 16 }}>
