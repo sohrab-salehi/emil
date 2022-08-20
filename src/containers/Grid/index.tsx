@@ -160,12 +160,15 @@ function Grid(props: { users: iUser[] }): JSX.Element {
                     <Tag color="green">Sorted by {sortedColumn}</Tag>
                 ) : null}
                 {titleFilters?.map((title: string) => (
-                    <Tag color="blue">{title}</Tag>
+                    <Tag key={title} color="blue">
+                        {title}
+                    </Tag>
                 ))}
             </Space>
             <Table
                 dataSource={users}
                 columns={columns}
+                loading={users.length === 0}
                 rowKey={(record) => record.email}
                 onChange={handleSortChange}
                 pagination={{
