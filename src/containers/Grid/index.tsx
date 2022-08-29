@@ -135,7 +135,11 @@ function Grid(props: { users: iUser[] }): JSX.Element {
     return (
         <>
             <Space size={[0, 16]} style={{ marginBottom: 16 }}>
-                <Button onClick={resetOrder} style={{ marginRight: 20 }}>
+                <Button
+                    onClick={resetOrder}
+                    style={{ marginRight: 20 }}
+                    disabled={sortedColumn === null}
+                >
                     Reset Order
                 </Button>
                 {sortedColumn !== null ? (
