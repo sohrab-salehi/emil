@@ -20,30 +20,21 @@ function Grid(props: { users: iUser[] }): JSX.Element {
         filters,
         sorter
     ) => {
-        if (pagination.pageSize) {
-            pageSize = pagination.pageSize;
-        }
-        if (pagination.current) {
-            pageNumber = pagination.current;
-        }
+        pageSize = pagination.pageSize ? pagination.pageSize : 20;
+        pageNumber = pagination.current ? pagination.current : 1;
         const tempSorter = sorter as SorterResult<iUser>;
-        const sortString = String(
-            tempSorter.column ? tempSorter.column.key : null
-        );
-        sortedColumn = sortString;
+        sortedColumn = String(tempSorter.column ? tempSorter.column.key : null);
         titleFilters = filters.name?.map((item) => String(item));
-        const pageString = String(pagination.current);
-        const sizeString = String(pagination.pageSize);
         const titleFiltersString = filters.name?.join(",");
         let params: iParams = {
-            page: pageString,
-            size: sizeString,
+            page: String(pageNumber),
+            size: String(pageSize),
         };
         if (titleFiltersString) {
             params = { ...params, titleFilters: titleFiltersString };
         }
-        if (sortString !== "null") {
-            params = { ...params, sort: sortString };
+        if (sortedColumn !== "null") {
+            params = { ...params, sort: sortedColumn };
         }
         setUrlParams(params as URLSearchParamsInit);
     };
