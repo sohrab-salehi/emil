@@ -10,10 +10,14 @@ import { iParams } from "../../types/urlParams";
 function Grid(props: { users: iUser[] }): JSX.Element {
     const { users } = props;
     const [urlParams, setUrlParams] = useSearchParams();
+    const validFilters = ["Miss", "Mr", "Ms", "Mrs"];
     let pageSize = urlParams.get("size") ? Number(urlParams.get("size")) : 20;
     let pageNumber = urlParams.get("page") ? Number(urlParams.get("page")) : 1;
     let sortedColumn = urlParams.get("sort");
-    let titleFilters = urlParams.get("titleFilters")?.split(",");
+    let titleFilters = urlParams
+        .get("titleFilters")
+        ?.split(",")
+        .filter((title: string) => validFilters.includes(title));
 
     const handleTableChange: TableProps<iUser>["onChange"] = (
         pagination,
@@ -147,7 +151,7 @@ function Grid(props: { users: iUser[] }): JSX.Element {
                     <Tag color="green">Sorted by {sortedColumn}</Tag>
                 ) : null}
                 {titleFilters?.map((title: string) => (
-                    <Tag key={title} color="blue">
+                    <Tag data-testid={title} key={title} color="blue">
                         {title}
                     </Tag>
                 ))}

@@ -1,6 +1,5 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { BrowserRouter, MemoryRouter } from "react-router-dom";
 import App from "./App";
 
@@ -40,5 +39,21 @@ test(
         expect(
             await screen.findByRole("button", { name: /Reset Order/i })
         ).toBeEnabled();
+    }
+);
+
+test(
+    "Check if the appropriate title filters tags are VISIBLE " +
+        "after filtering using url query params",
+    async () => {
+        render(
+            <MemoryRouter initialEntries={["?titleFilters=Miss,Mr"]}>
+                <App />
+            </MemoryRouter>
+        );
+
+        // verify page content for default route
+        expect(await screen.findByTestId("Miss")).toBeVisible();
+        expect(await screen.findByTestId("Mr")).toBeVisible();
     }
 );
