@@ -138,6 +138,7 @@ function Grid(props: { users: iUser[] }): JSX.Element {
                 <Button
                     onClick={resetOrder}
                     style={{ marginRight: 20 }}
+                    name="resetOrder"
                     disabled={sortedColumn === null}
                 >
                     Reset Order
