@@ -10,8 +10,8 @@ import { iParams } from "../../types/urlParams";
 function Grid(props: { users: iUser[] }): JSX.Element {
     const { users } = props;
     const [urlParams, setUrlParams] = useSearchParams();
-    let pageSize = Number(urlParams.get("size"));
-    let pageNumber = Number(urlParams.get("page"));
+    let pageSize = urlParams.get("size") ? Number(urlParams.get("size")) : 20;
+    let pageNumber = urlParams.get("page") ? Number(urlParams.get("page")) : 1;
     let sortedColumn = urlParams.get("sort");
     let titleFilters = urlParams.get("titleFilters")?.split(",");
 
