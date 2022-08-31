@@ -2,6 +2,9 @@
 
 In this project, a simple table component is implemented with the ability to sort, filter, and change page size and number. Also, all the table parameters are bound to the page URL so the client can load the required information directly by entering the right URL.
 
+### REST API
+I used the [Random User API](https://randomuser.me/api/) to provide some sample data to work with that. You can visit its documentation. 
+
 ### Linter & code formatter
 `Eslint` and `Prettier` was used with **Airbnb** config.
 
@@ -43,8 +46,13 @@ In the project directory, you can run different commands for different purposes.
 ```
 npm run test
 ```
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Launches the test runner in the interactive watch mode and runs unit tests.
+
+```
+npx cypress open
+```
+Launches the cypress and runs all the end to end tests.
+
 
 ### 🏗️ Build the project
 ```
