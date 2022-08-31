@@ -10,40 +10,35 @@ import { iParams } from "../../types/urlParams";
 function Grid(props: { users: iUser[] }): JSX.Element {
     const { users } = props;
     const [urlParams, setUrlParams] = useSearchParams();
-    let pageSize = Number(urlParams.get("size"));
-    let pageNumber = Number(urlParams.get("page"));
+    const validFilters = ["Miss", "Mr", "Ms", "Mrs"];
+    let pageSize = urlParams.get("size") ? Number(urlParams.get("size")) : 20;
+    let pageNumber = urlParams.get("page") ? Number(urlParams.get("page")) : 1;
     let sortedColumn = urlParams.get("sort");
-    let titleFilters = urlParams.get("titleFilters")?.split(",");
+    let titleFilters = urlParams
+        .get("titleFilters")
+        ?.split(",")
+        .filter((title: string) => validFilters.includes(title));
 
     const handleTableChange: TableProps<iUser>["onChange"] = (
         pagination,
         filters,
         sorter
     ) => {
-        if (pagination.pageSize) {
-            pageSize = pagination.pageSize;
-        }
-        if (pagination.current) {
-            pageNumber = pagination.current;
-        }
+        pageSize = pagination.pageSize ? pagination.pageSize : 20;
+        pageNumber = pagination.current ? pagination.current : 1;
         const tempSorter = sorter as SorterResult<iUser>;
-        const sortString = String(
-            tempSorter.column ? tempSorter.column.key : null
-        );
-        sortedColumn = sortString;
+        sortedColumn = String(tempSorter.column ? tempSorter.column.key : null);
         titleFilters = filters.name?.map((item) => String(item));
-        const pageString = String(pagination.current);
-        const sizeString = String(pagination.pageSize);
         const titleFiltersString = filters.name?.join(",");
         let params: iParams = {
-            page: pageString,
-            size: sizeString,
+            page: String(pageNumber),
+            size: String(pageSize),
         };
         if (titleFiltersString) {
             params = { ...params, titleFilters: titleFiltersString };
         }
-        if (sortString !== "null") {
-            params = { ...params, sort: sortString };
+        if (sortedColumn !== "null") {
+            params = { ...params, sort: sortedColumn };
         }
         setUrlParams(params as URLSearchParamsInit);
     };
@@ -144,14 +139,19 @@ function Grid(props: { users: iUser[] }): JSX.Element {
     return (
         <>
             <Space size={[0, 16]} style={{ marginBottom: 16 }}>
-                <Button onClick={resetOrder} style={{ marginRight: 20 }}>
+                <Button
+                    onClick={resetOrder}
+                    style={{ marginRight: 20 }}
+                    name="resetOrder"
+                    disabled={sortedColumn === null}
+                >
                     Reset Order
                 </Button>
                 {sortedColumn !== null ? (
                     <Tag color="green">Sorted by {sortedColumn}</Tag>
                 ) : null}
                 {titleFilters?.map((title: string) => (
-                    <Tag key={title} color="blue">
+                    <Tag data-testid={title} key={title} color="blue">
                         {title}
                     </Tag>
                 ))}
