@@ -1,14 +1,16 @@
 {
     "env": {
         "browser": true,
-        "es2021": true
+        "es2021": true,
+        "cypress/globals": true
     },
     "extends": [
         "plugin:react/recommended",
         "airbnb",
         "plugin:@typescript-eslint/recommended",
         "prettier/prettier",
-        "plugin:prettier/recommended"
+        "plugin:prettier/recommended",
+        "plugin:cypress/recommended"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -18,7 +20,7 @@
         "ecmaVersion": 12,
         "sourceType": "module"
     },
-    "plugins": ["react", "@typescript-eslint", "react-hooks"],
+    "plugins": ["react", "@typescript-eslint", "react-hooks", "cypress"],
     "rules": {
         "react/jsx-filename-extension": [
             "warn",
